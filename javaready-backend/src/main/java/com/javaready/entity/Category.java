@@ -8,11 +8,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(
         name = "categories",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_category_name",
-                        columnNames = "name"
-                )
+        indexes = {
+                @Index(name = "idx_category_name", columnList = "name")
         }
 )
 @Getter
@@ -26,23 +23,24 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
 
     @Column(length = 500)
     private String description;
 
-    @Column(length = 255)
-    private String icon;
-
-    @Builder.Default
     @Column(nullable = false)
+    @Builder.Default
     private Boolean active = true;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer displayOrder = 0;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @PrePersist
